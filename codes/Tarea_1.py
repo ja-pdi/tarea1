@@ -96,40 +96,42 @@ plt.title('Threshold')
 # sobely = cv2.Sobel(thresh,cv2.CV_64F,0,1,ksize=5)  # y
 
 im2, contours, hierarchy = cv2.findContours(thresh,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
-plt.subplot(1,6,6),
-plt.imshow(thresh,cmap='Greys')
-plt.title('Contours')
-plt.show()
 
 r = 0
 bandera = False
 for i in range(len(contours)):
     cnt=contours[i]
     x,y,w,h = cv2.boundingRect(cnt)
+    cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),1)
     # Estoy intentando este if para que cuando detecte una i no pinte el otro pedazo y que el contador no se 
     # vuelva mierda pero no esta funcionando!
-    if x+w<19:
-        if bandera==False:
-            bandera = True 
-            cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),1)
-            r = r + 1
-        else: 
-            bandera = False
-    else:
-        cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),1)
-        r = r + 1
+    # if x+w<19:
+    #     if bandera==False:
+    #         bandera = True 
+    #         cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),1)
+    #         r = r + 1
+    #     else: 
+    #         bandera = False
+    # else:
+    #     cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),1)
+    #     r = r + 1
 
-print("El número de carácteres en la imagen es: " + str(r))
+plt.subplot(1,6,6),
+plt.imshow(img,cmap='Greys')
+plt.title('Contours')
 
 
-plt.figure()
-plt.subplot(1,3,1),
-plt.imshow(imgGRAY,'gray')
-plt.title('Imagen Original')
-plt.subplot(1,3,2),
-plt.imshow(img,'inferno')
-plt.title('Imagen letras detectadas')
-plt.subplot(1,3,3),
-plt.imshow(thresh,'gray')
-plt.title('Imagen Binaria sin ruido')
+print("El número de carácteres en la imagen es: " + str(len(contours)))
 plt.show()
+
+# plt.figure()
+# plt.subplot(1,3,1),
+# plt.imshow(imgGRAY,'gray')
+# plt.title('Imagen Original')
+# plt.subplot(1,3,2),
+# plt.imshow(img,'inferno')
+# plt.title('Imagen letras detectadas')
+# plt.subplot(1,3,3),
+# plt.imshow(thresh,'gray')
+# plt.title('Imagen Binaria sin ruido')
+# plt.show()
