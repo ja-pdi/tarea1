@@ -8,101 +8,104 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 # Leer imagen
-img = cv2.imread('../img/text1.png')
+img = cv2.imread('../img/text2.png')
 
 # Convertir a escala de grises
 imgGRAY = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-# Filtro Gaussiano
-# Obtencion de los coeficientes
-ksize = 3
-sigma = 0.3*((ksize-1)*0.5 - 1) + 0.8
 
-imgFILT	=	cv2.GaussianBlur(imgGRAY, (3,3), 0)
-plt.figure()
-plt.subplot(1,6,1),
-plt.imshow(imgGRAY,'gray')
-plt.title('Imagen Original')
-plt.subplot(1,6,2),
-plt.imshow(imgFILT,cmap='Greys')
-plt.title('Gauss')
+# Laplacian Filter
+imgFILT = cv2.Laplacian(imgGRAY,cv2.CV_8U)
+# Gaussian Filter
+imgFILT1 = cv2.GaussianBlur(imgGRAY, (3,3), 0)
+# Bilateral Filter
+imgFILT2 = cv2.bilateralFilter(imgGRAY,9,75,75)
 
-
-# Thres OTSU GAUS
-# thresh = cv2.threshold(imgFILT,0, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C+cv2.THRESH_OTSU)
-# print(type(thresh))
-# Bilateral Filtering
-
+# plt.figure(),
+# plt.subplot(1,3,1),
+# plt.imshow(imgFILT,cmap='Greys'),
+# plt.subplot(1,3,2),
+# plt.imshow(imgFILT1,cmap='Greys'),
+# plt.subplot(1,3,3),
+# plt.imshow(imgFILT2,cmap='Greys'),
+# plt.show()
 
 # ----------------------EROSION DILATACION
 
-# # Erosión
-# erosion = np.ones((2, 1), np.uint8)
-# imgEr = cv2.erode(imgFILT, erosion, iterations=3)
-# plt.subplot(1,6,3),
-# plt.imshow(imgEr,cmap='Greys')
-# plt.title('Erosionada')
-# # Dilatacion 
-# dilatacion = cv2.getStructuringElement(cv2.MORPH_CROSS,(3,3))
-# imgDi = cv2.dilate(imgEr, dilatacion, iterations=1)
-# plt.subplot(1,6,4),
-# plt.imshow(imgDi,cmap='Greys')
-# plt.title('Dilatada')
-
-# imgDiEr = imgDi
+# Erosión
+erosion = np.ones((3,3), np.uint8)
+imgEr = cv2.erode(imgGRAY, erosion, iterations=1)
+plt.subplot(2,4,1),
+plt.imshow(imgEr,cmap='Greys')
+plt.title('Erosionada')
+# Dilatacion 
+dilatacion = cv2.getStructuringElement(cv2.MORPH_CROSS,(3,1))
+imgErDi = cv2.dilate(imgFILT, dilatacion, iterations=1)
+plt.subplot(2,4,2),
+plt.imshow(imgErDi,cmap='Greys')
+plt.title('Dilatada')
 
 # ---------------------DILATACION EROSION
 
 # Dilatacion 
-dilatacion = cv2.getStructuringElement(cv2.MORPH_CROSS,(3,3))
-imgDi = cv2.dilate(imgFILT, dilatacion, iterations=1)
-plt.subplot(1,6,3),
+dilatacion = cv2.getStructuringElement(cv2.MORPH_RECT,(3,3))
+imgDi = cv2.dilate(imgGRAY, dilatacion, iterations=1)
+plt.subplot(2,4,5),
 plt.imshow(imgDi,cmap='Greys')
 plt.title('Dilatada')
+
+imgDiEr = cv2.Laplacian(imgDi,cv2.CV_8U)
 # Erosión
-erosion = np.ones((1, 2), np.uint8)
-imgEr = cv2.erode(imgDi, erosion, iterations=1)
-plt.subplot(1,6,4),
-plt.imshow(imgEr,cmap='Greys')
+erosion = np.ones((1,3), np.uint8)
+#imgDiEr = cv2.erode(imgDi, erosion, iterations=2)
+#imgDiEr = imgDi
+plt.subplot(2,4,6),
+plt.imshow(imgDiEr,cmap='Greys')
 plt.title('Erosionada')
- 
-imgDiEr = imgEr
+
 
 
 # ESTO DE CLOSING ES PARA RELLENAR LAS LETRAS PERO NO ES NECESARIO
-# kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(3,3))
+# kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(2,2))
 # closing = cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel)
 # plt.subplot(1,5,5),
 # plt.imshow(closing,cmap='Greys')
 # plt.title('Closing')
 # Closing
 
-thresh = cv2.adaptiveThreshold(imgDiEr, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
-plt.subplot(1,6,5),
-plt.imshow(thresh,cmap='Greys')
-plt.title('Threshold')
-
-
-# imgDi = cv2.dilate(imgGRAY, np.ones((3, 1), np.uint8), iterations=1)
-# imgEr = cv2.erode(imgDi, np.ones((3, 1), np.uint8), iterations=1)
-# blur = cv2.GaussianBlur(imgGRAY,(3,1),0)
-#Bilateral Filter
-# imgEr = cv2.bilateralFilter(imgDi,9,75,75)
 #  Se le aplica un treshold para obtener la imagen binaria 
-# thresh = cv2.threshold(imgEr,0,255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C+cv2.THRESH_OTSU)
+# threshDiEr = cv2.threshold(imgDiEr,0,255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C+cv2.THRESH_OTSU)
+threshDiEr = cv2.adaptiveThreshold(imgDiEr, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
+# threshDiEr = cv2.adaptiveThreshold(imgFILT, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
+plt.subplot(2,4,7),
+plt.imshow(threshDiEr,cmap='Greys')
+plt.title('Threshold Di-Er')
+
+#  Se le aplica un treshold para obtener la imagen binaria 
+# threshErDi = cv2.threshold(imgErDi,0,255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C+cv2.THRESH_OTSU)
+threshErDi = cv2.adaptiveThreshold(imgErDi, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
+plt.subplot(2,4,3),
+plt.imshow(threshErDi,cmap='Greys')
+plt.title('Threshold Er-Di')
+
+
 # thresh = cv2.Canny(thresh,100,200)
-# laplacian = cv2.Laplacian(thresh,cv2.CV_8UC1)
 # sobelx = cv2.Sobel(thresh,cv2.CV_64F,1,0,ksize=5)  # x
 # sobely = cv2.Sobel(thresh,cv2.CV_64F,0,1,ksize=5)  # y
 
-im2, contours, hierarchy = cv2.findContours(thresh,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+im2, contours2, hierarchy2 = cv2.findContours(threshDiEr,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+im3, contours3, hierarchy3 = cv2.findContours(imgFILT,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+
+img1 = img
+img2 = img
 
 r = 0
+i = 0
 bandera = False
-for i in range(len(contours)):
-    cnt=contours[i]
+for i in range(len(contours2)):
+    cnt=contours2[i]
     x,y,w,h = cv2.boundingRect(cnt)
-    cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),1)
+    cv2.rectangle(img1,(x,y),(x+w,y+h),(255,0,0),1)
     # Estoy intentando este if para que cuando detecte una i no pinte el otro pedazo y que el contador no se 
     # vuelva mierda pero no esta funcionando!
     # if x+w<19:
@@ -116,22 +119,24 @@ for i in range(len(contours)):
     #     cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),1)
     #     r = r + 1
 
-plt.subplot(1,6,6),
-plt.imshow(img,cmap='Greys')
+plt.subplot(2,4,4),
+plt.imshow(img1,cmap='Greys')
+plt.title('Contours')
+
+r = 0
+i = 0
+bandera = False
+for i in range(len(contours3)):
+    cnt=contours3[i]
+    x,y,w,h = cv2.boundingRect(cnt)
+    cv2.rectangle(img2,(x,y),(x+w,y+h),(255,0,0),1)
+
+plt.subplot(2,4,8),
+plt.imshow(img2,cmap='Greys')
 plt.title('Contours')
 
 
-print("El número de carácteres en la imagen es: " + str(len(contours)))
-plt.show()
+print("El número de carácteres en la imagen es: " + str(len(contours2)))
 
-# plt.figure()
-# plt.subplot(1,3,1),
-# plt.imshow(imgGRAY,'gray')
-# plt.title('Imagen Original')
-# plt.subplot(1,3,2),
-# plt.imshow(img,'inferno')
-# plt.title('Imagen letras detectadas')
-# plt.subplot(1,3,3),
-# plt.imshow(thresh,'gray')
-# plt.title('Imagen Binaria sin ruido')
-# plt.show()
+print("El número de carácteres en la imagen es: " + str(len(contours3)))
+plt.show()
