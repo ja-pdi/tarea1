@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Leer imagen
-imgBGR = cv2.imread('../img/text2.png')
+imgBGR = cv2.imread('../img/Prueba2.png')
 
 # Convertir a escala de grises
 imgGREY = cv2.cvtColor(imgBGR, cv2.COLOR_BGR2GRAY)
@@ -45,9 +45,7 @@ plt.title('Dilatada')
 
 img, contours, hierarchy = cv2.findContours(imgDi,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
 
-r = 0
 i = 0
-bandera = False
 for i in range(len(contours)):
     cnt=contours[i]
     x,y,w,h = cv2.boundingRect(cnt)
