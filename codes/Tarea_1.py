@@ -8,7 +8,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 # Leer imagen
-img = cv2.imread('../img/text2.png')
+img = cv2.imread('../img/CabreraNoya.png')
 
 # Convertir a escala de grises
 imgGRAY = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -33,14 +33,14 @@ imgFILT2 = cv2.bilateralFilter(imgGRAY,9,75,75)
 # ----------------------EROSION DILATACION
 
 # Erosión
-erosion = np.ones((3,3), np.uint8)
+erosion = np.ones((2,1), np.uint8)
 imgEr = cv2.erode(imgGRAY, erosion, iterations=1)
 plt.subplot(2,4,1),
 plt.imshow(imgEr,cmap='Greys')
 plt.title('Erosionada')
 # Dilatacion 
-dilatacion = cv2.getStructuringElement(cv2.MORPH_CROSS,(3,1))
-imgErDi = cv2.dilate(imgFILT, dilatacion, iterations=1)
+dilatacion = cv2.getStructuringElement(cv2.MORPH_RECT,(1,5))
+imgErDi = cv2.dilate(imgEr, dilatacion, iterations=1)
 plt.subplot(2,4,2),
 plt.imshow(imgErDi,cmap='Greys')
 plt.title('Dilatada')
@@ -93,7 +93,7 @@ plt.title('Threshold Er-Di')
 # sobelx = cv2.Sobel(thresh,cv2.CV_64F,1,0,ksize=5)  # x
 # sobely = cv2.Sobel(thresh,cv2.CV_64F,0,1,ksize=5)  # y
 
-im2, contours2, hierarchy2 = cv2.findContours(threshDiEr,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+im2, contours2, hierarchy2 = cv2.findContours(imgErDi,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
 im3, contours3, hierarchy3 = cv2.findContours(imgFILT,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
 
 img1 = img

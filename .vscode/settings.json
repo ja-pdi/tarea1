@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "C:\\Users\\Jeck Jaimes\\Anaconda3\\envs\\pdiclass\\python.exe"
+    "python.pythonPath": "C:\\Users\\Jeck Jaimes\\Anaconda3\\envs\\pdiclass\\python.exe",
+    "python.linting.enabled": false
 }
