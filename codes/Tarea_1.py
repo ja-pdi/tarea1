@@ -8,7 +8,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 # Leer imagen
-img = cv2.imread('../img/Test2.png')
+img = cv2.imread('../img/test2.png')
 
 # Convertir a escala de grises
 imgGRAY = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)

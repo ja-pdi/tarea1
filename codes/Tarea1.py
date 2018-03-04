@@ -9,7 +9,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Leer imagen
-imgBGR = cv2.imread('../img/Prueba2.png')
+imgBGR = cv2.imread('C:/Users/Andres/Documents/PDI/tarea1/img/Prueba2.png')
+imgBGR = imgBGR[0:205,...]
 
 # Convertir a escala de grises
 imgGREY = cv2.cvtColor(imgBGR, cv2.COLOR_BGR2GRAY)
